@@ -21,5 +21,6 @@ from dogs.views import DogsApiView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("api/v1/dogslist/", DogsApiView.as_view())
+    path("api/v1/dogslist/", DogsApiView.as_view()),
+    path("api/v1/dogslist/<int:pk>/", DogsApiView.as_view())
 ]

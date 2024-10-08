@@ -1,40 +1,56 @@
 from django.forms import model_to_dict
-from rest_framework import generics
 from dogs.models import Dog
 from dogs.serializers import DogsSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.status import HTTP_204_NO_CONTENT
+
 
 class DogsApiView(APIView):
+    def get_object(
+        self, pk
+    ):  # пользовательская функция для проверки пользовательского pk
+        # (уникального id объекта модели Dog)
+        try:
+            return Dog.objects.get(pk=pk)
+        except Dog.DoesNotExist:
+            return Response({"error": "Current method is not allowed"})
+
     def get(self, request):
         dogs = Dog.objects.all()
         return Response({"posts": DogsSerializer(dogs, many=True).data})
-        # преобразование Queryset в словарь на основе атрибутов DogsSerializer -> JSONRenderer
 
-# # Во главе иерархии класов API находится APIView (родительский класс)
-# class DogsApiView(APIView):
-#     def get(self, request): # GET запрос
-#         dogs = Dog.objects.all().values() 
-#         # получаем не объекты модели, а значения внутри этих объектов
-#         return Response({"title": dogs}) # преобразование атрибутов в JSON.
-    
-
-    def post(self, request): 
+    def post(self, request):
         # POST запрос с данными от клиента (JSON преобразуется в словарь request.data) в HTTP запросе
-        serializer = DogsSerializer(data=request.data) # десериазизация данных от пользователя
-        serializer.is_valid(raise_exception=True) 
+        serializer = DogsSerializer(
+            data=request.data
+        )  # десериазизация данных от пользователя
+        serializer.is_valid(
+            raise_exception=True
+        )  # сохраняет результат в validated_data
         # валидаторы находятся внутри класса DogsSerializer
+        serializer.save()  # вызов метода create, результат в атрибуте data
+        # каждая функция должна выполнять только одну область действий
 
-        post_new = Dog.objects.create(
-            title=request.data["title"],
-            content=request.data["content"],
-            category_id=request.data["category_id"]
-        ) # на основе этих данных создается строка в таблице Dog, результат в переменной post_new
-        return Response({"post": DogsSerializer(post_new).data}) # объект модели в словарь
-        # затем, Responce == JSONRenderer.
+        return Response({"posts": serializer.data})
 
+    def put(self, request, pk=None):
+        if not pk:
+            return Response({"error": "Method PUT is not allowed"})
 
+        instance = self.get_object(pk=pk)
 
-# class DogsApiView(generics.ListAPIView):
-#     queryset = Dog.objects.all()
-#     serializer_class = DogsSerializer # сериализатор будет использоваться представлением 
+        serializer = DogsSerializer(data=request.data, instance=instance)
+        serializer.is_valid(
+            raise_exception=True
+        )  # валидированные данные в validated_data
+        serializer.save()  # вызовет метод update из-за instance
+        return Response({"post": serializer.data})
+
+    def delete(self, request, pk=None):
+        if not pk:
+            return Response({"error": "Method DELETE is not allowed"})
+
+        instance = self.get_object(pk=pk, method="DELETE")
+        instance.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
