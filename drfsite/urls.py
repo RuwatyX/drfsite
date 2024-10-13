@@ -17,10 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from dogs.views import DogsApiView
+from dogs.views import DogAPIList, DogAPIUpdate, DogAPIDetailView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path("api/v1/dogslist/", DogsApiView.as_view()),
-    path("api/v1/dogslist/<int:pk>/", DogsApiView.as_view())
+    path('admin/', admin.site.urls), # admin panel
+    path("api/v1/dogslist/", DogAPIList.as_view()), # get, post
+    path("api/v1/dogslist/<int:pk>/", DogAPIUpdate.as_view()), # put, delete
+    path("api/v1/dogdetail/<int:pk>/", DogAPIDetailView.as_view())
 ]
