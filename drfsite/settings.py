@@ -130,5 +130,10 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         "rest_framework.renderers.JSONRenderer", # обмен данных между конечным пользователем и сервером происходит в JSON формате
         "rest_framework.renderers.BrowsableAPIRenderer" # Тестирование API в браузере
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        "rest_framework.permissions.IsAuthenticated", 
+        # выдача данных только авторизованным пользователяем (по умолчанию)
+        # происходит на глобальном уровне для всех представлений (если нет своих)
     ]
-}
+} 
