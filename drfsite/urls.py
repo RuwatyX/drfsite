@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from rest_framework.urlpatterns import format_suffix_patterns
 from dogs import views
 from rest_framework import routers
@@ -28,7 +28,11 @@ import test1
 urlpatterns = [
     path('admin/', admin.site.urls), # admin panel
     path("api/v1/dogs/", views.DogAPIList.as_view()),
-    path("api/v1/dog/<int:pk>", views.DogAPIUpdate.as_view()),
-    path("api/v1/dogdelete/<int:pk>", views.DogAPIDestroy.as_view()),
+    path("api/v1/dog/<int:pk>/", views.DogAPIUpdate.as_view()),
+    path("api/v1/dogdelete/<int:pk>/", views.DogAPIDestroy.as_view()),
+    path("api/v1/drf-auth/", include("rest_framework.urls")), # аутентификация по сессиям
+    path("api/v1/auth/", include('djoser.urls')), # корень для действий с токенами
+    re_path(r'^auth/', include('djoser.urls.authtoken')), 
+    # маршрут для авторизации и выхода (auth/token/login | auth/token/logout)
     path("api/v2/", include('test1.urls')) # api/v2 -> test1.urls
 ]

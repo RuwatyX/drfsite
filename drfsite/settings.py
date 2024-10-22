@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
 
     'dogs',
     'test1',
@@ -126,7 +129,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REST_FRAMEWORK = {
+REST_FRAMEWORK = { # разрешения для drf
     'DEFAULT_RENDERER_CLASSES': [
         "rest_framework.renderers.JSONRenderer", # обмен данных между конечным пользователем и сервером происходит в JSON формате
         "rest_framework.renderers.BrowsableAPIRenderer" # Тестирование API в браузере
@@ -135,5 +138,10 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated", 
         # выдача данных только авторизованным пользователяем (по умолчанию)
         # происходит на глобальном уровне для всех представлений (если нет своих)
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication', # default
+        'rest_framework.authentication.SessionAuthentication', # default
     ]
-} 
+}   

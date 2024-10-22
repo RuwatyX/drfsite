@@ -6,8 +6,8 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
-
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 
 
@@ -19,13 +19,16 @@ class DogAPIList(generics.ListCreateAPIView): # реализует get и post �
     # queryset - список записей возвращаемых клиенту (serializer возвращает конкретные поля записей)
     # запрос в бд для получение записей на основае queryset, передача их сериализатору 
     serializer_class = DogsSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, ) # Only GET request
+    # permission_classes = (IsAuthenticatedOrReadOnly, ) # Only GET request
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, )
 
 
-class DogAPIUpdate(generics.UpdateAPIView):
+class DogAPIUpdate(generics.RetrieveUpdateAPIView):
     queryset = Dog.objects.all() # ленивый запрос, просто связывание queryset c моделью
     serializer_class = DogsSerializer
-    permission_classes = (IsOwnerOrReadOnly, )
+    # permission_classes = (IsOwnerOrReadOnly, )
+    permission_classes = (IsAuthenticated, )
     
 class DogAPIDestroy(generics.DestroyAPIView):
     queryset = Dog.objects.all()
