@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
-
+from dogs.paginations import DogsApiListPagination
 
 
 
@@ -21,7 +21,8 @@ class DogAPIList(generics.ListCreateAPIView): # реализует get и post �
     serializer_class = DogsSerializer
     # permission_classes = (IsAuthenticatedOrReadOnly, ) # Only GET request
     permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, )
+    # authentication_classes = (TokenAuthentication, )
+    pagination_class = DogsApiListPagination
 
 
 class DogAPIUpdate(generics.RetrieveUpdateAPIView):

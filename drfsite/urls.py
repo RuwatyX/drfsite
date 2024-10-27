@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path, re_path
 from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 from dogs import views
 from rest_framework import routers
 import test1
@@ -34,5 +35,10 @@ urlpatterns = [
     path("api/v1/auth/", include('djoser.urls')), # корень для действий с токенами
     re_path(r'^auth/', include('djoser.urls.authtoken')), 
     # маршрут для авторизации и выхода (auth/token/login | auth/token/logout)
-    path("api/v2/", include('test1.urls')) # api/v2 -> test1.urls
+    path("api/v2/", include('test1.urls')), # api/v2 -> test1.urls
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+
+    
 ]
