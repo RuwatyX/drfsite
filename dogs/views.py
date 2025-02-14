@@ -12,12 +12,10 @@ from dogs.paginations import DogsApiListPagination
 
 
 
-
-
 class DogAPIList(generics.ListCreateAPIView): # реализует get и post запросы 
     queryset = Dog.objects.all() # в данном примере все объекты модели будут возвращены клиенту
     # queryset - список записей возвращаемых клиенту (serializer возвращает конкретные поля записей)
-    # запрос в бд для получение записей на основае queryset, передача их сериализатору 
+    # запрос в бд для получение записей на основе queryset, передача их сериализатору 
     serializer_class = DogsSerializer
     # permission_classes = (IsAuthenticatedOrReadOnly, ) # Only GET request
     permission_classes = (IsAuthenticated, )

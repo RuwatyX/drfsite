@@ -10,3 +10,4 @@ class DogsSerializer(serializers.ModelSerializer):
         # если хотим использовать все поля то __all__  
         fields = "__all__" 
 
+
